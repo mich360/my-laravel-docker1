@@ -19,7 +19,7 @@ class ItemController extends Controller
 
     // 商品詳細を表示
     public function show($id)
-{
+    {
         try {
             // 商品IDに基づいて商品を取得（存在しない場合はModelNotFoundExceptionがスローされる）
             $item = Item::findOrFail($id);
@@ -30,39 +30,40 @@ class ItemController extends Controller
 
         // 商品詳細ページを表示
         return view('items.show', compact('item'));
-}
-
-
-    // public function show($id)
-    // {
-    //     // 商品IDに基づいて商品を取得
-    //     $item = Item::findOrFail($id); 
-
-    //     // 商品詳細ページを表示
-    //     return view('items.show', compact('item'));
-    // }
+    }
 
     // 新しい商品を保存する
-    public function storeItem(Request $request)
+    public function store(Request $request)
     {
         // バリデーション
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'image_path' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:2048', // 画像のバリデーションを追加
             'description' => 'nullable|string',
         ]);
 
         // 新しい商品データを保存
-        Item::create([
-            'name' => $validated['name'],
-            'price' => $validated['price'],
-            'image_path' => $validated['image_path'] ?? '/images/default.jpg',  // 画像のパスがない場合のデフォルト
-            'description' => $validated['description'] ?? '商品説明なし',  // 説明がない場合のデフォルト
-        ]);
+        $item = new Item;
+        $item->name = $validated['name'];
+        $item->price = $validated['price'];
+        $item->description = $validated['description'] ?? '商品説明なし'; // デフォルト説明
+
+        // 画像の保存（ファイルがあれば）
+        if ($request->hasFile('image')) {
+            // 画像ファイルを public/images フォルダに保存
+            $imagePath = $request->file('image')->storeAs('images', 'hana1.JPG', 'public'); // ファイル名を 'hana1.JPG' として保存
+            $item->image = $imagePath; // 保存した画像のパスをモデルに設定
+        } else {
+            // 画像がない場合はデフォルトの画像を設定
+            $item->image = 'images/default.jpg'; // デフォルト画像のパス
+        }
+
+        // 保存
+        $item->save();
 
         // 商品一覧ページにリダイレクト
-        return redirect()->route('items.index');
+        return redirect()->route('items.index')->with('success', '商品が保存されました');
     }
 
     // カートにアイテムを追加

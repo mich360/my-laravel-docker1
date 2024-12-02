@@ -12,7 +12,7 @@
     <nav>
         <ul>
             <li><a href="{{ route('items.index') }}">商品一覧</a></li>
-            <li><a href="{{ route('cart') }}">カート</a></li>
+            <li><a href="{{ route('cart.index') }}">カート</a></li>
         </ul>
     </nav>
 </header>
