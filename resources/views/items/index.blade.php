@@ -111,16 +111,20 @@
     <ul>
     @foreach($items as $item)
     <li>
-        <h2><a href="{{ route('items.show', $item->id) }}">{{ $item->name }}</a></h2>
-        <img src="{{ asset('images/' . $item->image) }}" alt="{{ $item->name }}の画像">
-        <p>価格: {{ $item->price }}円</p>
-        <p>{{ $item->description }}</p>
+       <h2><a href="{{ route('items.show', $item->id) }}">{{ $item->name }}</a></h2>
 
-        <!-- カートに追加ボタン -->
-        <form action="{{ route('cart.add', $item->id) }}" method="POST">
-            @csrf
-            <button type="submit">カートに追加</button>
-        </form>
+<!-- テスト用の固定画像 -->
+<!-- <img src="{{ asset('images/ha4.JPG') }}" alt="花画像"> -->
+<!-- モデルから取得した画像 -->
+<img src="{{ asset('images/' . ($item->image ?? 'default.jpg')) }}" alt="{{ $item->name }}の画像">
+<p>価格: {{ $item->price }}円</p>
+<p>{{ $item->description }}</p>
+
+<!-- カートに追加ボタン -->
+<form action="{{ route('cart.add', $item->id) }}" method="POST">
+    @csrf
+    <button type="submit">カートに追加</button>
+</form>
     </li>
     @endforeach
 
