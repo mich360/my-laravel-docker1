@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: my-laravel-docker1
+    env: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    buildCommand: ""
+    startCommand: ""
+    healthCheckPath: /
+    autoDeploy: true
+
