@@ -6,6 +6,7 @@
 
 ```code
 起動
+cd ~/projects/my-laravel-docker1
 
 docker compose exec app php artisan tinker
 
