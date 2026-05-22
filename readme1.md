@@ -30,3 +30,13 @@ $item->save();
 再起動
  npm run dev
 ```
+
+```code 
+docker compose exec app php artisan tinker
+
+App\Models\Item::create([
+    'name' => 'バラ',
+    'price' => 800,
+    'image' => 'hana2.JPG',
+    'description' => '一重の野生バラ',
+]);

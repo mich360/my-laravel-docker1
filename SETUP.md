@@ -5,115 +5,234 @@
 - **プロジェクト名：** `my-laravel-docker1`
 - **場所：** `~/projects/my-laravel-docker1`
 - **GitHubリポジトリ：** `https://github.com/mich360/my-laravel-docker1`
-- **データベース：** SQLite (`my_database.db`)
+- **データベース：** SQLite (`database/database.sqlite`)
 - **フレームワーク：** Laravel 10.48.29
-- **PHP：** 8.5.0
+- **PHP：** 8.2（Docker: php:8.2-fpm）
+- **Webサーバー：** Nginx
+- **フロントエンド：**
+  - Vite
+  - Tailwind CSS
+- **開発環境：** Docker Compose
 
 ---
 
 ## 🚀 起動手順（開発環境）
 
-### 方法1：開発サーバー（推奨）
+### 方法1：Docker + Vite（推奨）
 
-#### ターミナル1：Laravelサーバー
+現在の開発環境は Docker + Nginx + PHP-FPM + Vite 構成です。
+
+---
+
+### ターミナル1：Docker起動
+
 ```bash
 cd ~/projects/my-laravel-docker1
-php artisan serve
+
+docker compose up -d
 ```
-→ `http://127.0.0.1:8000` で起動（または8001）
 
 #### ターミナル2：Vite（フロントエンド）
+
 ```bash
 cd ~/projects/my-laravel-docker1
+
 npm run dev
 ```
-→ `http://localhost:5174` で起動
 
-#### アクセスURL
-```
-http://localhost:8000/items        # 商品一覧
-http://localhost:8000/cart         # カート
-http://localhost:8000/login        # ログイン
-http://localhost:8000/dashboard    # ダッシュボード
-```
+→ Vite 開発サーバー起動
+通常：
 
----
-
-### 方法2：Docker（本番環境テスト）
-```bash
-cd ~/projects/my-laravel-docker1
-docker-compose up -d
+```code
+http://localhost:5173
 ```
 
 #### アクセスURL
-```
-http://localhost/index.php/items   # 商品一覧
-http://localhost/index.php/cart    # カート
-http://localhost/index.php/login   # ログイン
+
+```link
+http://localhost/items        # 商品一覧
+http://localhost/cart         # カート
+http://localhost/login        # ログイン
+http://localhost/dashboard    # ダッシュボード
 ```
 
-#### 停止
+### 🛑 Docker停止
+
 ```bash
-docker-compose down
+docker compose down
 ```
 
----
+###  よく使うコマンド
 
-## 🛠️ よく使うコマンド
+#### データベース操作（Tinker）
 
-### データベース操作
 ```bash
-# Tinker起動
-php artisan tinker
+docker compose exec app php artisan tinker
+```
 
-# 商品追加
-App\Models\Item::create([
+商品追加
+
+```php
+   App\Models\Item::create([
     'name' => 'さつき',
     'price' => 4000,
     'image' => 'hana1.JPG',
     'description' => 'ツツジに比べ咲く時期が１ケ月早い',
 ]);
 
-# 商品更新
-$item = App\Models\Item::find(1);
-$item->description = '新しい説明';
-$item->save();
-
-# Tinker終了
-exit
 ```
 
-### Git操作
+商品更新
+
+```php
+    $item = App\Models\Item::find(1);
+
+    $item->description = '新しい説明';
+
+    $item->save();
+
+```
+
+Tinker終了
+
 ```bash
-# 状態確認
+   exit
+
+   又は
+
+   .quit
+```
+
+
+🗄️ SQLite確認
+
+```bash
+  sqlite3 database/database.sqlite
+```  
+
+テーブル一覧
+
+```sql
+  .tables
+```
+
+商品確認
+
+```sql
+  SELECT * FROM items;
+```
+
+SQLite終了
+
+```sql
+   .quit
+```
+
+### 🛠️ migration
+
+migration実行
+
+```bash
+   docker compose exec app php artisan migrate
+```
+
+migration状態確認
+
+```bash
+   docker compose exec app php artisan migrate:status
+```
+
+### 🛠️ Storageリンク
+
+画像表示用：
+
+```bash
+  docker compose exec app php artisan storage:link
+```
+
+## 🛠️ Git操作
+
+```txt
+  状態確認
 git status
 
-# 変更をステージング
+変更を追加
 git add .
 
-# コミット
+コミット
 git commit -m "Update message"
 
-# プッシュ
+GitHubへpush
 git push origin main
-```
+
+📝 開発状況
+実装済み機能
+
+
+✅ 商品一覧表示
+
+
+✅ 商品詳細表示
+
+
+✅ 検索機能
+
+
+✅ カート機能（追加・削除）
+
+
+✅ ユーザー認証
+
+
+✅ Session Cart
+
+
+✅ 商品画像表示
+
+
+✅ SQLite連携
+
+
+✅ Docker環境
+
+
+✅ Vite + Tailwind CSS
+
+
+
+⏳ 今後の課題
+
+
+⏳ 決済機能（Stripe等）
+
+
+⏳ 注文履歴
+
+
+⏳ 在庫管理
+
+
+⏳ 商品管理画面
+
+
+⏳ MySQL/PostgreSQL対応
+
+
+⏳ 本番デプロイ
+
+
+
+⚠️ 補足
+現在は：
+Nginx + PHP-FPM + Laravel + SQLite
+構成です。
+そのため通常：
+php artisan serve
+は使用せず、
+docker compose up -d
+を使用します。
+
+最終更新日： 2026年5月22日
+
 
 ---
-
-## 📝 開発状況
-
-### 実装済み機能
-- ✅ 商品一覧表示
-- ✅ 商品詳細表示
-- ✅ 検索機能
-- ✅ カート機能（追加・削除）
-- ✅ ユーザー認証
-
-### 今後の課題
-- ⏳ 決済機能
-- ⏳ 注文履歴
-- ⏳ MySQLへの移行
-
----
-
-**最終更新日：** 2026年2月14日
