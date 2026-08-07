@@ -74,10 +74,10 @@ docker compose exec app php artisan tinker
 
 ```php
    App\Models\Item::create([
-    'name' => 'さつき',
-    'price' => 4000,
-    'image' => 'hana1.JPG',
-    'description' => 'ツツジに比べ咲く時期が１ケ月早い',
+    'name' => 'バラ',
+    'price' => 1300,
+    'image' => 'hana2.JPG',
+    'description' => '一重咲きの野生種',
 ]);
 
 ```

@@ -77,26 +77,73 @@
 <header>
     <nav>
         <ul>
+
             @auth
-                <li>ようこそ、{{ Auth::user()->name }}さん</li>
                 <li>
-                    <form method="POST" action="{{ route('logout') }}">
+                    ようこそ、{{ Auth::user()->name }}さん
+                </li>
+
+                <li>
+                    <form method="POST"
+                          action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit">ログアウト</button>
+                        <button type="submit">
+                            ログアウト
+                        </button>
                     </form>
                 </li>
+
             @else
-                <li><a href="{{ route('login') }}">ログイン</a></li>
-                <li><a href="{{ route('register') }}">新規登録</a></li>
+
+                <li>
+                    <a href="{{ route('login') }}">
+                        ログイン
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('register') }}">
+                        新規登録
+                    </a>
+                </li>
+
             @endauth
-            <li><a href="{{ route('items.index') }}">商品一覧</a></li>
-      
-            <li class="search-form">
-                <form action="{{ route('search') }}" method="GET">
-                    <input type="text" name="query" placeholder="検索">
-                    <button type="submit">検索</button>
-                </form>
+
+            <li>
+                <a href="{{ route('items.index') }}">
+                    商品一覧
+                </a>
             </li>
+
+            <li>
+                <a href="{{ route('cart.index') }}">
+                    カート
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('orders.index') }}">
+                    注文一覧
+                </a>
+            </li>
+
+            <li class="search-form">
+
+                <form action="{{ route('search') }}"
+                      method="GET">
+
+                    <input type="text"
+                           name="query"
+                           placeholder="検索">
+
+                    <button type="submit">
+                        検索
+                    </button>
+
+                </form>
+
+            </li>
+
         </ul>
     </nav>
 </header>

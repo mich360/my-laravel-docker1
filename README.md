@@ -1,66 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# my-laravel-docker1 — プロジェクト解説
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel + Docker + Vite で構築する ECサイト の構造まとめ
 
-## About Laravel
+**スタック：** Laravel (PHP) / Docker / Vite / ECサイト
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## MVCパターンとは
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+MVC（Model-View-Controller）は、ソフトウェア設計のパターンです。
 
-## Learning Laravel
+| コンポーネント | 役割 |
+|---|---|
+| **Model（モデル）** | データとビジネスロジックを担当。DBとのやりとりはすべてここで行う。 |
+| **View（ビュー）** | 画面表示を担当。Bladeテンプレートを使ってHTMLを生成する。 |
+| **Controller（コントローラー）** | ModelとViewの仲介役。ルートからリクエストを受け取り、処理を振り分ける。 |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### MVCのメリット
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. **修正が楽** — デザイン変更はViewだけ。Modelを壊す心配がない。
+2. **分業しやすい** — デザイナーはView、エンジニアはModelと担当を分けて並行開発できる。
+3. **再利用しやすい** — 同じModelをスマホ用・PC用など複数のViewで使い回せる。
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Laravelのリクエスト処理フロー
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+ブラウザ
+  ↓
+routes/web.php
+  ↓
+Controller
+  ↓
+Model
+  ↓
+SQLite
+  ↓
+Controller
+  ↓
+Blade (View)
+  ↓
+ブラウザ表示
+```
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## ファイル構成と役割
 
-## Contributing
+### ① `routes/web.php` — URLの受付
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```php
+Route::get('/items', [ItemController::class, 'index']);
+```
 
-## Code of Conduct
+`/items` へのアクセスを受け取り、`ItemController` の `index()` を呼び出す。
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+### ② `app/Http/Controllers/ItemController.php` — 処理の司令塔
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```php
+public function index()
+{
+    $items = Item::all();
+    return view('items.index', compact('items'));
+}
+```
 
-## License
+DBから商品を取得し、Bladeへ渡す。RouteとModel/Viewをつなぐ仲介役。
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+### ③ `app/Models/` — DB操作
+
+```php
+class Item extends Model
+
+Item::all()      // 全件取得
+Item::find(1)    // 1件取得
+Item::create()   // 新規作成
+```
+
+SQLをLaravel風に簡単化。
+
+**現在のモデル：** `Item` / `Cart` / `Order` / `OrderItem` / `User`
+
+---
+
+### ④ `database/migrations/` — DB設計図
+
+```php
+Schema::create('orders', function (Blueprint $table) {
+    // ...
+});
+```
+
+```bash
+php artisan migrate
+```
+
+`php artisan migrate` を実行するとSQLite/MySQLに実際のテーブルが作成される。
+
+---
+
+### ⑤ `resources/views/` — 画面HTML（Blade）
+
+```blade
+{{-- items/index.blade.php --}}
+@foreach($items as $item)
+    <p>{{ $item->name }}</p>
+@endforeach
+```
+
+Bladeテンプレートでデータを受け取り、HTMLとして表示する。
+
+---
+
+### ⑥ `database/database.sqlite` — データベース
+
+**現在のテーブル：** `items` / `carts` / `orders` / `order_items` / `users`
+
+---
+
+## 現在の進捗
+
+以下の実装がすでに完了しています：
+
+| 機能 | 説明 | 状態 |
+|---|---|---|
+| **CRUD** | データ操作の基本4機能（作成・読取・更新・削除） | ✅ 完了 |
+| **Migration** | データベースの設計図をコードで管理する仕組み | ✅ 完了 |
+| **Routing** | URLと処理を結びつける仕組み | ✅ 完了 |
+| **MVC** | アプリの代表的な設計構造 | ✅ 完了 |
+| **Relation** | テーブル同士の関連付け | ✅ 完了 |

@@ -12,7 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('carts', function (Blueprint $table) {
+
             $table->id();
+
+            // ユーザーID
+            $table->foreignId('user_id')
+                  ->nullable()
+                  ->constrained()
+                  ->onDelete('cascade');
+
+            // 商品ID
+            $table->foreignId('item_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+
+            // 数量
+            $table->integer('quantity')->default(1);
+
             $table->timestamps();
         });
     }

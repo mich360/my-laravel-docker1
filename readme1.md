@@ -35,8 +35,8 @@ $item->save();
 docker compose exec app php artisan tinker
 
 App\Models\Item::create([
-    'name' => 'バラ',
-    'price' => 800,
-    'image' => 'hana2.JPG',
-    'description' => '一重の野生バラ',
+    'name' => '紫酢漿草',
+    'price' => 20,
+    'image' => 'm-katabami.JPG',
+    'description' => 'むらさきかたばみ',
 ]);

@@ -114,9 +114,19 @@
                     </span>
                 </p>
 
-                <button class="mt-4 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded text-lg">
-                    購入手続きへ
-                </button>
+                <form action="{{ route('orders.checkout') }}"
+                        method="POST">
+
+                        @csrf
+
+                        <button type="submit"
+                                class="mt-4 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded text-lg">
+
+                            購入手続きへ
+
+                        </button>
+
+                 </form>
 
             </div>
 

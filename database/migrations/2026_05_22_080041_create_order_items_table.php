@@ -12,7 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_items', function (Blueprint $table) {
+
             $table->id();
+
+            // 注文ID
+            $table->foreignId('order_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+
+            // 商品ID（Item）
+            $table->foreignId('item_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+
+            // 数量
+            $table->integer('quantity')->default(1);
+
+            // 注文時価格
+            $table->integer('price');
+
             $table->timestamps();
         });
     }
