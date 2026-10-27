@@ -1,6 +1,6 @@
-FROM php:8.2-fpm
+FROM php:8.2.35-fpm
 
-# システム依存パッケージ + Node.js
+# システム依存パッケージ + Node.js (脆弱性対策のため22.xの最新LTSを指定)
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     gnupg \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
