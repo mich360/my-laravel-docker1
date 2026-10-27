@@ -1,13 +1,13 @@
 services:
   app:
-    image: php:8.2-fpm
+    image: php:8.2.35-fpm
     container_name: laravel_app
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
     ports:
-      - "9000:9000"   # PHP-FPM を明示的に公開
-      - "5173:5173"   # Vite 用ポート追加
+      - "9000:9000"
+      - "5173:5173"
 
   nginx:
     container_name: nginx_container
@@ -19,3 +19,10 @@ services:
       - "80:80"
     depends_on:
       - app
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
